@@ -1,0 +1,25 @@
+body.light {
+  background-color: #f7fafc; /* Light background */
+  color: black; /* Dark text */
+}
+
+body.dark {
+  background-color: #1a202c; /* Dark background */
+  color: white; /* Light text */
+}
+
+.bg-white {
+  background-color: white; /* White background for sections */
+}
+
+.bg-gray-800 {
+  background-color: #2d3748; /* Dark background for sections */
+}
+
+.text-gray-600 {
+  color: #718096; /* Gray text */
+}
+
+.text-gray-500 {
+  color: #a0aec0; /* Lighter gray text */
+}
