@@ -1,4 +1,5 @@
-const { link } = require("framer-motion/client");
+// const { motion } = require("framer-motion/client");
+
 const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({

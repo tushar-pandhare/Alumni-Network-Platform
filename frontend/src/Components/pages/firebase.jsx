@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDmNfUt2qrhe9QkKL34kSvOnnKa7x7JP-Y",
+  apiKey: "AIzaSyB2uKF0jWG5i8sUv6ggJVyBWVkml1qR0rQ",
   authDomain: "alumini-network-6f3c7.firebaseapp.com",
   projectId: "alumini-network-6f3c7",
   storageBucket: "alumini-network-6f3c7.appspot.com",
