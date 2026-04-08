@@ -30,7 +30,6 @@ app.use(
   })
 );
 
-// 👇 Add these two lines to increase payload size limit
 
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
