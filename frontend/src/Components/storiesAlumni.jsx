@@ -11,9 +11,9 @@ const TheAlumniStories = () => {
 
   useEffect(() => {
     const fetchStories = async () => {
-      if (!user) return;
+      // Stories are visible to all authenticated users (user checked by ProtectedRoute)
       try {
-        const response = await axios.get("http://localhost:5000/alumni-stories");
+        const response = await axios.get("/alumni-stories");
         if (response.data.stories) {
           setStories(response.data.stories);
         }

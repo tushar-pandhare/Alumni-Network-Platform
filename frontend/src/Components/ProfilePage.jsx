@@ -32,11 +32,14 @@ const handleChange = (e) => {
   const uploadToCloudinary = async (image) => {
     const data = new FormData();
     data.append("file", image);
-    data.append("upload_preset", "alumni_uploads");
-    data.append("cloud_name", "deda1j7ca");
+    
+  const cloudName = import.meta.env.CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.CLOUDINARY_UPLOAD_PRESET;
+  data.append("upload_preset", "uploeadPreset");
+  data.append("cloud_name", "cloudName");
 
     try {
-      const res = await fetch("https://api.cloudinary.com/v1_1/deda1j7ca/image/upload", {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: "POST",
         body: data,
       });
@@ -81,7 +84,7 @@ const handleChange = (e) => {
         MobileNum: formData.mobile
       };
 
-      await axios.post("http://localhost:5000/profile", payload);
+      await axios.post("/profile", payload);
       if (imageUrl) localStorage.setItem("profileImage", imageUrl);
       navigate("/home");
       alert("Profile submitted successfully!");

@@ -27,7 +27,7 @@
 //       try {
 //         // Fetch profile data using email
 //         const res = await axios.get(
-//           `http://localhost:5000/profile?email=${user.email}`
+//           `/profile?email=${user.email}`
 //         );
 //         const profile = res.data;
 
@@ -43,13 +43,13 @@
 
 //         // Check if already submitted
 //         const storyRes = await axios.get(
-//           `http://localhost:5000/alumni-story/${user.email}`
+//           `/alumni-story/${user.email}`
 //         );
 //         if (storyRes.data.submitted) setAlreadySubmitted(true);
 
 //         // Fetch all stories
 //         const allStoriesRes = await axios.get(
-//           "http://localhost:5000/alumni-stories"
+//           "/alumni-stories"
 //         );
 //         if (allStoriesRes.data.stories) setStories(allStoriesRes.data.stories);
 //       } catch (err) {
@@ -66,7 +66,7 @@
 //   //       try {
 //   //         // Fetch user profile by email
 //   //         const res = await fetch(
-//   //           `http://localhost:5000/profile?email=${user.email}`
+//   //           `/profile?email=${user.email}`
 //   //         );
 //   //         if (res.ok) {
 //   //           const profile = await res.json();
@@ -100,7 +100,7 @@
 
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:5000/alumni-story",
+//         "/alumni-story",
 //         newStory
 //       );
 //       if (response.status === 201) {
@@ -303,7 +303,7 @@ const AlumniStoryForm = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:5000/profile?email=${user.email}`
+          `/profile?email=${user.email}`
         );
         const profile = res.data;
 
@@ -319,13 +319,13 @@ const AlumniStoryForm = () => {
 
         // Check if already submitted
         const storyRes = await axios.get(
-          `http://localhost:5000/alumni-story/${user.email}`
+          `/alumni-story/${user.email}`
         );
         if (storyRes.data.submitted) setAlreadySubmitted(true);
 
         // Fetch all stories
         const allStoriesRes = await axios.get(
-          "http://localhost:5000/alumni-stories"
+          "/alumni-stories"
         );
         if (allStoriesRes.data.stories) setStories(allStoriesRes.data.stories);
       } catch (err) {
@@ -347,7 +347,7 @@ const AlumniStoryForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/alumni-story",
+        "/alumni-story",
         newStory
       );
       if (response.status === 201) {

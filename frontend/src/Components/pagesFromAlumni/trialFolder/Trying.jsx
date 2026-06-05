@@ -48,7 +48,7 @@ const Trying = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/trying/signup", {
+      const response = await fetch("/trying/signup", {
         method: "POST",
         body: formData,
       });

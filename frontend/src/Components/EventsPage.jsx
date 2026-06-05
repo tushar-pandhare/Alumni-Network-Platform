@@ -27,7 +27,7 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch("http://localhost:5000/events");
+        const res = await fetch("/events");
         const data = await res.json();
         if (res.ok) {
           setEvents(data);

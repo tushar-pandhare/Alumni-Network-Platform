@@ -44,7 +44,7 @@ const EventsCalendar = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch("http://localhost:5000/events");
+        const res = await fetch("/events");
         const data = await res.json();
         setEvents(data);
       } catch (err) {
@@ -87,7 +87,7 @@ const EventsCalendar = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/upload-event", {
+      const res = await fetch("/upload-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -337,7 +337,7 @@ export default EventsCalendar;
     //   useEffect(() => {
     //     const fetchEvents = async () => {
     //       try {
-    //         const res = await fetch("http://localhost:5000/events");
+    //         const res = await fetch("/events");
     //         const data = await res.json();
     //         setEvents(data);
     //       } catch (err) {
@@ -383,7 +383,7 @@ export default EventsCalendar;
     //     }
 
     //     try {
-    //       const res = await fetch("http://localhost:5000/upload-event", {
+    //       const res = await fetch("/upload-event", {
     //         method: "POST",
     //         headers: { "Content-Type": "application/json" },
     //         body: JSON.stringify(formData),

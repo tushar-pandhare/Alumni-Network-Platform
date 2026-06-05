@@ -8,7 +8,7 @@
 //   useEffect(() => {
 //     const fetchJobs = async () => {
 //       try {
-//         const response = await fetch("http://localhost:5000/jobs/active");
+//         const response = await fetch("/jobs/active");
 //         const data = await response.json();
 //         setJobPosts(data);
 //       } catch (err) {
@@ -125,7 +125,7 @@ const JobsPage = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/jobs/active");
+        const response = await fetch("/jobs/active");
         const data = await response.json();
         setJobPosts(data);
       } catch (err) {

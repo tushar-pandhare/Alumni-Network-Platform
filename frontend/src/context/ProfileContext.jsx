@@ -15,7 +15,7 @@ export const ProfileProvider = ({ children }) => {
       if (user) {
         try {
           const res = await fetch(
-            `http://localhost:5000/profile?email=${user.email}`
+            `/profile?email=${user.email}`
           );
           if (res.ok) {
             const profileData = await res.json();
