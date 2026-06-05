@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, LogOut, User } from 'lucide-react';
+import { useEffect, useState, useRef } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, LogOut, User } from "lucide-react";
 
 const navLinks = [
   { to: "/home", label: "Home" },
@@ -18,7 +18,16 @@ const Navbar = () => {
   const [profileDropdown, setProfileDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const storedUser = localStorage.getItem("user");
+
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (err) {
+    console.error("Invalid user data in localStorage");
+    localStorage.removeItem("user");
+  }
   const profileImage = user?.imageUrl || null;
 
   useEffect(() => {
@@ -40,9 +49,7 @@ const Navbar = () => {
 
   const navLinkClass = ({ isActive }) =>
     `relative transition-colors text-sm font-semibold px-2 py-1
-      ${isActive
-        ? "text-blue-500"
-        : "text-white hover:text-blue-400"}
+      ${isActive ? "text-blue-500" : "text-white hover:text-blue-400"}
       `;
 
   const handleLogout = () => {
@@ -59,7 +66,7 @@ const Navbar = () => {
           {/* Logo */}
           <div
             className="flex items-center gap-2 cursor-pointer select-none"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate("/home")}
           >
             <span className="text-2xl font-extrabold text-blue-500 tracking-wide drop-shadow">
               Alumni<span className="text-indigo-400">Connect</span>
@@ -95,7 +102,7 @@ const Navbar = () => {
                     <button
                       onClick={() => {
                         setProfileDropdown(false);
-                        navigate('/profileview');
+                        navigate("/profileview");
                       }}
                       className="w-full flex items-center gap-2 px-4 py-2 text-indigo-700 hover:bg-indigo-50 transition rounded-t-xl"
                     >
@@ -122,7 +129,11 @@ const Navbar = () => {
 
           {/* Mobile Menu Icon */}
           <div className="md:hidden">
-            <button onClick={toggleMenu} className="text-white" aria-label="Toggle Menu">
+            <button
+              onClick={toggleMenu}
+              className="text-white"
+              aria-label="Toggle Menu"
+            >
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
@@ -150,7 +161,7 @@ const Navbar = () => {
                     alt="Profile"
                     onClick={() => {
                       toggleMenu();
-                      navigate('/profileview');
+                      navigate("/profileview");
                     }}
                     className="w-10 h-10 rounded-full border-2 border-blue-400 object-cover cursor-pointer hover:scale-105 transition"
                   />

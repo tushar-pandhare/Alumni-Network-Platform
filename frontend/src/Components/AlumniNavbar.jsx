@@ -220,6 +220,8 @@ import {
   FaHome,
 } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "./pages/firebase";
 
 const AlumniNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -239,9 +241,17 @@ const AlumniNavbar = () => {
     };
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  // ✅ FIX #11: Properly sign out from Firebase AND clear localStorage
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout error:", err);
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   return (
