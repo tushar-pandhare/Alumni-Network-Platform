@@ -60,7 +60,7 @@
 
 //         try {
 //           const res = await fetch(
-//             `http://localhost:5000/profile?email=${user.email}`
+//             `/profile?email=${user.email}`
 //           );
 //           if (res.ok) {
 //             const profile = await res.json();
@@ -113,7 +113,7 @@
 //       reader.onloadend = async () => {
 //         const base64Image = reader.result;
 //         try {
-//           const res = await fetch("http://localhost:5000/profile", {
+//           const res = await fetch("/profile", {
 //             method: profileExists ? "PATCH" : "POST",
 //             headers: { "Content-Type": "application/json" },
 //             body: JSON.stringify({ ...fields, profileImage: base64Image }),
@@ -138,7 +138,7 @@
 
 //   const handleSaveOrEdit = async (field) => {
 //     if (editMode[field]) {
-//       const endpoint = "http://localhost:5000/profile";
+//       const endpoint = "/profile";
 //       const method = profileExists ? "PATCH" : "POST";
 
 //       try {
@@ -372,11 +372,13 @@ const ProfilePage = () => {
   const uploadToCloudinary = async (image) => {
     const data = new FormData();
     data.append("file", image);
-    data.append("upload_preset", "alumni_uploads");
-    data.append("cloud_name", "deda1j7ca");
+      const cloudName = import.meta.env.CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.CLOUDINARY_UPLOAD_PRESET;
+    data.append("upload_preset", uploadPreset);
+    data.append("cloud_name", cloudName);
 
     try {
-      const res = await fetch("https://api.cloudinary.com/v1_1/deda1j7ca/image/upload", {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: "POST",
         body: data,
       });
@@ -406,22 +408,24 @@ const ProfilePage = () => {
         imageUrl = await uploadToCloudinary(formData.profileImage);
       }
 
+      // ✅ FIX #12: Field names now match ProfileModel schema exactly
+      // Schema uses: passingYear, occupation, linkedin, mobile (not graduationYear, currentJob, linkedIn, MobileNum)
       const payload = {
         name: formData.name,
         email: formData.email,
         branch: formData.branch,
-        graduationYear: formData.passingYear,
-        currentJob: formData.occupation,
+        passingYear: formData.passingYear,   // was: graduationYear
+        occupation: formData.occupation,      // was: currentJob
         location: formData.location,
-        linkedIn: formData.linkedin,
+        linkedin: formData.linkedin,          // was: linkedIn (capital N)
         github: formData.github,
         about: formData.about,
         skills: formData.skills,
         profileImage: imageUrl,
-        MobileNum: formData.mobile
+        mobile: formData.mobile,              // was: MobileNum
       };
 
-      await axios.post("http://localhost:5000/profile", payload);
+      await axios.post("http://localhost:5009/profile", payload);
       if (imageUrl) localStorage.setItem("profileImage", imageUrl);
       navigate("/home");
       alert("Profile submitted successfully!");

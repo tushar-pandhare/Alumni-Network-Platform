@@ -76,7 +76,7 @@ const FeedbackForum = () => {
   // Fetch suggestions from backend
   const fetchSuggestions = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/get-post-suggestion');
+      const response = await axios.get('/get-post-suggestion');
       setSuggestions(response.data);
     } catch (error) {
       showAlert('Error fetching suggestions', 'error');
@@ -95,7 +95,7 @@ const FeedbackForum = () => {
       if (user) {
         try {
           // Fetch user profile by email
-          const res = await fetch(`http://localhost:5000/profile?email=${user.email}`);
+          const res = await fetch(`/profile?email=${user.email}`);
           if (res.ok) {
             const profile = await res.json();
             if (profile.name) {
@@ -126,7 +126,7 @@ const FeedbackForum = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/post-Suggestions', {
+      await axios.post('/post-Suggestions', {
         title,
         author,
         votes: 0,
@@ -148,7 +148,7 @@ const FeedbackForum = () => {
     const userId = localStorage.getItem("userId") || generateRandomUserId();
 
     try {
-      const response = await axios.patch(`http://localhost:5000/suggestions/${id}/vote`, {
+      const response = await axios.patch(`/suggestions/${id}/vote`, {
         userId
       });
 
@@ -379,7 +379,7 @@ export default FeedbackForum;
 //   // Fetch suggestions from backend
 //   const fetchSuggestions = async () => {
 //     try {
-//       const response = await axios.get('http://localhost:5000/get-post-suggestion');
+//       const response = await axios.get('/get-post-suggestion');
 //       setSuggestions(response.data);
 //     } catch (error) {
 //       showAlert('Error fetching suggestions', 'error');
@@ -397,7 +397,7 @@ export default FeedbackForum;
 //     const unsubscribe = onAuthStateChanged(auth, async (user) => {
 //       if (user) {
 //         try {
-//           const res = await fetch(`http://localhost:5000/profile?email=${user.email}`);
+//           const res = await fetch(`/profile?email=${user.email}`);
 //           if (res.ok) {
 //             const profile = await res.json();
 //             if (profile.name) {
@@ -425,7 +425,7 @@ export default FeedbackForum;
 //       return;
 //     }
 //     try {
-//       await axios.post('http://localhost:5000/post-Suggestions', {
+//       await axios.post('/post-Suggestions', {
 //         title,
 //         author,
 //         votes: 0,
@@ -444,7 +444,7 @@ export default FeedbackForum;
 //   const handleLike = async (id) => {
 //     const userId = localStorage.getItem("userId") || generateRandomUserId();
 //     try {
-//       const response = await axios.patch(`http://localhost:5000/suggestions/${id}/vote`, {
+//       const response = await axios.patch(`/suggestions/${id}/vote`, {
 //         userId
 //       });
 //       if (response.status === 200) {

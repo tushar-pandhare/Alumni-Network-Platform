@@ -22,7 +22,7 @@
 //   useEffect(() => {
 //     const fetchJobs = async () => {
 //       try {
-//         const response = await fetch("http://localhost:5000/jobs/active");
+//         const response = await fetch("/jobs/active");
 //         if (!response.ok) throw new Error("Failed to fetch jobs");
 //         const data = await response.json();
 //         setJobPosts(data);
@@ -50,7 +50,7 @@
 //     };
 
 //     try {
-//       const response = await fetch("http://localhost:5000/job-posting", {
+//       const response = await fetch("/job-posting", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",

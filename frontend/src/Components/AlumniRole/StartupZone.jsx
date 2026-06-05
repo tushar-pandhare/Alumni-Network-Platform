@@ -27,7 +27,7 @@
 //   useEffect(() => {
 //     const fetchStartups = async () => {
 //       try {
-//         const response = await fetch('http://localhost:5000/get-startups');
+//         const response = await fetch('/get-startups');
 //         if (!response.ok) throw new Error('Failed to fetch startups');
 //         const data = await response.json();
 //         setStartups(data);
@@ -68,7 +68,7 @@
 //     }
 
 //     try {
-//       const response = await fetch('http://localhost:5000/startup-zone', {
+//       const response = await fetch('/startup-zone', {
 //         method: 'POST',
 //         headers: { 'Content-Type': 'application/json' },
 //         body: JSON.stringify({ startupName, industry, year }),
@@ -284,7 +284,7 @@ const StartupZone = () => {
   useEffect(() => {
     const fetchStartups = async () => {
       try {
-        const response = await fetch('http://localhost:5000/get-startups');
+        const response = await fetch('/get-startups');
         if (!response.ok) throw new Error('Failed to fetch startups');
         const data = await response.json();
         setStartups(data);
@@ -325,7 +325,7 @@ const StartupZone = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/startup-zone', {
+      const response = await fetch('/startup-zone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startupName, industry, year }),

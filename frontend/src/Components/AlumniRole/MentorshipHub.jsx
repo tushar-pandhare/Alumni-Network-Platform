@@ -44,7 +44,7 @@ const MentorshipHub = () => {
         setMentorData((prev) => ({ ...prev, email }));
 
         try {
-          const profileRes = await fetch(`http://localhost:5000/profile?email=${email}`);
+          const profileRes = await fetch(`/profile?email=${email}`);
           if (profileRes.ok) {
             const profile = await profileRes.json();
             setMentorData((prev) => ({
@@ -58,12 +58,12 @@ const MentorshipHub = () => {
             }));
           }
 
-          const mentorCheckRes = await fetch(`http://localhost:5000/is-mentor?email=${email}`);
+          const mentorCheckRes = await fetch(`/is-mentor?email=${email}`);
           const mentorStatus = await mentorCheckRes.json();
           setIsAlreadyMentor(mentorStatus.exists);
 
           if (mentorStatus.exists) {
-            const reqRes = await fetch(`http://localhost:5000/get-requests-for-mentor?mentorEmail=${email}`);
+            const reqRes = await fetch(`/get-requests-for-mentor?mentorEmail=${email}`);
             const reqData = await reqRes.json();
             setRequests(reqData.requests);
           }
@@ -82,7 +82,7 @@ const MentorshipHub = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await fetch('http://localhost:5000/get-mentors');
+      const res = await fetch('/get-mentors');
       const data = await res.json();
       setMentors(data);
     } catch (err) {
@@ -101,7 +101,7 @@ const MentorshipHub = () => {
 
   const registerMentor = async () => {
     try {
-      const response = await fetch('http://localhost:5000/mentor/register', {
+      const response = await fetch('/mentor/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -114,7 +114,7 @@ const MentorshipHub = () => {
         alert('Mentor registration successful!');
         setIsAlreadyMentor(true);
 
-        await fetch('http://localhost:5000/profile', {
+        await fetch('/profile', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -141,7 +141,7 @@ const MentorshipHub = () => {
 
   const handleUpdateStatus = async (requestId, newStatus) => {
     try {
-      const res = await fetch("http://localhost:5000/update-request-status", {
+      const res = await fetch("/update-request-status", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requestId, status: newStatus })

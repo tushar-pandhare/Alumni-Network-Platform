@@ -11,7 +11,7 @@ const Directory = () => {
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/alumni-directory");
+        const res = await axios.get("/alumni-directory");
         setAlumniData(res.data);
       } catch (err) {
         console.error("Error fetching alumni directory:", err);

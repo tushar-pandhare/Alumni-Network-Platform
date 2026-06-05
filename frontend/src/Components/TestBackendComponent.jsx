@@ -4,7 +4,7 @@ import axios from "axios";
 const TestBackendComponent = () => {
   const testBackend = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/alumni-story", {
+      const res = await axios.post("/alumni-story", {
         name: "Test User Tushar Pandhare ",
         email: "testtushar-pandhare@example.com",
         title: "Test Title Tushar pandhare",

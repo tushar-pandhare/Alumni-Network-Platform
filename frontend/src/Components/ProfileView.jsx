@@ -14,7 +14,7 @@ const ProfileView = () => {
           return;
         }
         
-        const response = await axios.get(`http://localhost:5000/profile?email=${email}`);
+        const response = await axios.get(`/profile?email=${email}`);
         setProfile(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Error fetching profile');

@@ -1,8 +1,8 @@
 // utils/cloudinaryUpload.js
 
 export const uploadToCloudinary = async (imageFile) => {
-  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
+  const cloudName = import.meta.env.CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.CLOUDINARY_UPLOAD_PRESET;
 
   if (!cloudName || !uploadPreset) {
     throw new Error("Missing Cloudinary environment variables");
