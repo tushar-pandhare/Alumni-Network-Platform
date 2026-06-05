@@ -20,6 +20,7 @@ const multer = require("multer")
 const mentorshipRoutes = require("./route/MentorshipRoute/mentorship.js");
 const signupRoutes = require("./route/SignupLogin/signup.js");
 const  UserTable = require("./route/SignupLogin/SignUpmodel.js");
+const Donation = require("./Models/DonationModel.js");
 // SignUpmodel
 
 const app = express();
