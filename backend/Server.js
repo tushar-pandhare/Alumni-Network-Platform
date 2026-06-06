@@ -47,7 +47,7 @@ app.use(
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:5173", "http://localhost:5000"];
+  : ["http://localhost:5173", "http://localhost:3000"];
 
 app.use(
   cors({
@@ -96,6 +96,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 // mentorshipRoutes overrides /get-pending-requests to include statusMap
 app.use(mentorshipRoutes);
 app.use("/donations", uploadLimiter, donationRoutes);
+// NOTE: signupRoutes (/route/SignupLogin/signup.js) is intentionally NOT mounted here.
+// That file uses a different schema (MultiUsers). Auth is handled directly below.
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
@@ -321,12 +323,25 @@ app.get("/get-requests-for-mentor", async (req, res, next) => {
 
 app.patch("/update-request-status", async (req, res, next) => {
   try {
-    const { requestId, status } = req.body;
+    const { requestId, status, mentorResponse } = req.body;
     if (!requestId || !["accepted", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid request" });
     }
+
+    const updatePayload = { status };
+
+    // When accepting, save the mentor's contact info and note
+    if (status === "accepted" && mentorResponse) {
+      updatePayload.mentorResponse = {
+        note:         mentorResponse.note         || "",
+        contactPhone: mentorResponse.contactPhone || "",
+        contactEmail: mentorResponse.contactEmail || "",
+        meetingLink:  mentorResponse.meetingLink  || "",
+      };
+    }
+
     const updated = await MentorshipRequest.findByIdAndUpdate(
-      requestId, { status }, { new: true }
+      requestId, updatePayload, { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Request not found" });
     res.status(200).json({ message: "Status updated", updated });

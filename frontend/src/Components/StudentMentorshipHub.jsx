@@ -29,11 +29,12 @@ const statusIcon = {
 const StudentMentorshipHub = () => {
   const [mentors, setMentors] = useState([]);
   const [studentEmail, setStudentEmail] = useState("");
-  const [requestStatusMap, setRequestStatusMap] = useState({}); // mentorEmail -> status string
+  const [requestStatusMap, setRequestStatusMap] = useState({});
+  const [contactMap, setContactMap] = useState({}); // mentorEmail -> { note, contactPhone, contactEmail, meetingLink }
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sendingTo, setSendingTo] = useState(null); // track which mentor is being sent to
-  const [messageMap, setMessageMap] = useState({}); // mentorEmail -> custom message
+  const [sendingTo, setSendingTo] = useState(null);
+  const [messageMap, setMessageMap] = useState({});
 
   // Resolve Firebase user
   useEffect(() => {
@@ -60,8 +61,8 @@ const StudentMentorshipHub = () => {
         setMentors(Array.isArray(mentorData) ? mentorData : []);
 
         const statusData = await statusRes.json();
-        // statusMap: { "mentor@email.com": "pending" | "accepted" | "rejected" }
         setRequestStatusMap(statusData.statusMap || {});
+        setContactMap(statusData.contactMap || {});
       } catch (err) {
         console.error("Error loading mentorship data:", err);
       } finally {
@@ -208,16 +209,49 @@ const StudentMentorshipHub = () => {
 
                     {/* Action Area */}
                     <div className="mt-auto">
-                      {status === "accepted" && (
-                        <div className="flex flex-col items-center gap-2">
-                          <div className={`w-full text-center px-4 py-2 rounded-full font-semibold text-sm ${statusStyles.accepted}`}>
-                            {statusIcon.accepted} Request Accepted
+                      {status === "accepted" && (() => {
+                        const contact = contactMap[mentor.email] || {};
+                        const hasContactInfo = contact.note || contact.contactPhone || contact.contactEmail || contact.meetingLink;
+                        return (
+                          <div className="flex flex-col gap-2">
+                            <div className={`w-full text-center px-4 py-2 rounded-full font-semibold text-sm ${statusStyles.accepted}`}>
+                              {statusIcon.accepted} Request Accepted
+                            </div>
+                            {hasContactInfo ? (
+                              <div className="bg-green-900/30 border border-green-500/30 rounded-xl p-4 text-sm space-y-2 mt-1">
+                                <p className="text-green-300 font-semibold text-xs mb-2">🎉 Your mentor shared their contact:</p>
+                                {contact.note && (
+                                  <p className="text-slate-200 text-xs italic">"{contact.note}"</p>
+                                )}
+                                {contact.contactPhone && (
+                                  <p className="text-indigo-200 text-xs flex items-center gap-2">
+                                    📞 <span className="font-medium">{contact.contactPhone}</span>
+                                  </p>
+                                )}
+                                {contact.contactEmail && (
+                                  <p className="text-indigo-200 text-xs flex items-center gap-2">
+                                    ✉️ <a href={`mailto:${contact.contactEmail}`} className="underline hover:text-white">{contact.contactEmail}</a>
+                                  </p>
+                                )}
+                                {contact.meetingLink && (
+                                  <a
+                                    href={contact.meetingLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-xs font-medium"
+                                  >
+                                    🎥 Book a meeting
+                                  </a>
+                                )}
+                              </div>
+                            ) : (
+                              <p className="text-green-300 text-xs text-center">
+                                🎉 You can now contact this mentor directly!
+                              </p>
+                            )}
                           </div>
-                          <p className="text-green-300 text-xs text-center">
-                            🎉 You can now contact this mentor directly!
-                          </p>
-                        </div>
-                      )}
+                        );
+                      })()}
 
                       {status === "rejected" && (
                         <div className={`w-full text-center px-4 py-2 rounded-full font-semibold text-sm ${statusStyles.rejected}`}>

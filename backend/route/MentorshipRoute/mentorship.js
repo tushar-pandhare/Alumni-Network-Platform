@@ -2,15 +2,12 @@ const express = require("express");
 const router = express.Router();
 const MentorshipRequest = require("../../Models/Mentorship/MentorshipRequestModel");
 
-// NOTE: The main /send-request and /get-pending-requests routes live in Server.js
-// This file only adds the statusMap-aware version and the mentor-side status route
-
-// GET /get-pending-requests — returns both pendingMentorEmails AND statusMap
-// Overrides the simpler version in Server.js (this router is mounted first via app.use(mentorshipRoutes))
+// GET /get-pending-requests
+// Returns statusMap AND full request data (including mentorResponse contact info)
+// This overrides the simpler version that would be in Server.js
 router.get("/get-pending-requests", async (req, res) => {
   try {
     const { studentEmail } = req.query;
-
     if (!studentEmail) {
       return res.status(400).json({ message: "studentEmail is required" });
     }
@@ -27,14 +24,23 @@ router.get("/get-pending-requests", async (req, res) => {
       statusMap[r.mentorEmail] = r.status;
     });
 
-    res.json({ pendingMentorEmails, statusMap });
+    // contactMap: { "mentor@email.com": { note, contactPhone, contactEmail, meetingLink } }
+    // Only populated when status is "accepted"
+    const contactMap = {};
+    requests
+      .filter((r) => r.status === "accepted" && r.mentorResponse)
+      .forEach((r) => {
+        contactMap[r.mentorEmail] = r.mentorResponse;
+      });
+
+    res.json({ pendingMentorEmails, statusMap, contactMap });
   } catch (err) {
     console.error("Error fetching pending requests:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// PATCH /mentorship-request/:id/status — alternate status update endpoint
+// PATCH /mentorship-request/:id/status
 router.patch("/mentorship-request/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -42,9 +48,7 @@ router.patch("/mentorship-request/:id/status", async (req, res) => {
       return res.status(400).json({ message: "Invalid status value" });
     }
     const updated = await MentorshipRequest.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
+      req.params.id, { status }, { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Request not found" });
     res.json({ message: "Status updated", request: updated });

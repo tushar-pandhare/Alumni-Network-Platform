@@ -4,7 +4,7 @@
  * Development:  Vite proxies backend calls (vite.config.js), BASE_URL = ""
  * Production:   Set VITE_API_BASE_URL env var (e.g. https://api.yourdomain.com)
  */
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5173";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export const apiUrl = (path) => `${API_BASE_URL}${path}`;
 

@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
+      {/* Don't render children until Firebase has resolved auth state */}
       {!loading && children}
     </AuthContext.Provider>
   );
