@@ -425,7 +425,7 @@ const ProfilePage = () => {
         mobile: formData.mobile,              // was: MobileNum
       };
 
-      await axios.post("http://localhost:5009/profile", payload);
+      await axios.post("http://localhost:5000/profile", payload);
       if (imageUrl) localStorage.setItem("profileImage", imageUrl);
       navigate("/home");
       alert("Profile submitted successfully!");
