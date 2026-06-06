@@ -2,7 +2,7 @@
 
 Alumni Network Platform is a full-stack MERN application that connects students and alumni through mentorship, networking, career opportunities, events, startup collaboration, and community engagement.
 
-## Features
+## Features 
 
 * Authentication with Firebase & JWT
 * Alumni Directory
