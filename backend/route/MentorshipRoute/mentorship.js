@@ -2,48 +2,55 @@ const express = require("express");
 const router = express.Router();
 const MentorshipRequest = require("../../Models/Mentorship/MentorshipRequestModel");
 
-// Send request
-router.post("/send-request", async (req, res) => {
-  const { studentEmail, mentorEmail, message } = req.body;
+// NOTE: The main /send-request and /get-pending-requests routes live in Server.js
+// This file only adds the statusMap-aware version and the mentor-side status route
 
-  const existing = await MentorshipRequest.findOne({ studentEmail, mentorEmail });
-  if (existing) {
-    return res.status(409).json({ message: "Request already sent." });
-  }
-
-  const newRequest = new MentorshipRequest({ studentEmail, mentorEmail, message });
-  await newRequest.save();
-  res.json({ message: "Request sent." });
-});
-
-// Get request status for student
+// GET /get-pending-requests — returns both pendingMentorEmails AND statusMap
+// Overrides the simpler version in Server.js (this router is mounted first via app.use(mentorshipRoutes))
 router.get("/get-pending-requests", async (req, res) => {
-  const { studentEmail } = req.query;
+  try {
+    const { studentEmail } = req.query;
 
-  const requests = await MentorshipRequest.find({ studentEmail });
-  const sentEmails = requests.map((r) => r.mentorEmail);
-  const statusMap = {};
-  requests.forEach((r) => (statusMap[r.mentorEmail] = r.status));
-  res.json({ pendingMentorEmails: sentEmails, statusMap });
+    if (!studentEmail) {
+      return res.status(400).json({ message: "studentEmail is required" });
+    }
+
+    const requests = await MentorshipRequest.find({ studentEmail });
+
+    const pendingMentorEmails = requests
+      .filter((r) => r.status === "pending")
+      .map((r) => r.mentorEmail);
+
+    // statusMap: { "mentor@email.com": "pending" | "accepted" | "rejected" }
+    const statusMap = {};
+    requests.forEach((r) => {
+      statusMap[r.mentorEmail] = r.status;
+    });
+
+    res.json({ pendingMentorEmails, statusMap });
+  } catch (err) {
+    console.error("Error fetching pending requests:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-// Get requests by mentor email
-router.get("/get-requests-by-email", async (req, res) => {
-  const { email } = req.query;
-  const requests = await MentorshipRequest.find({ mentorEmail: email });
-  res.json(requests);
-});
-
-// Change status (accept/reject)
+// PATCH /mentorship-request/:id/status — alternate status update endpoint
 router.patch("/mentorship-request/:id/status", async (req, res) => {
-  const { status } = req.body;
-  const updated = await MentorshipRequest.findByIdAndUpdate(
-    req.params.id,
-    { status },
-    { new: true }
-  );
-  if (!updated) return res.status(404).json({ message: "Request not found" });
-  res.json({ message: "Status updated", request: updated });
+  try {
+    const { status } = req.body;
+    if (!["accepted", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+    const updated = await MentorshipRequest.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: "Request not found" });
+    res.json({ message: "Status updated", request: updated });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 });
 
 module.exports = router;

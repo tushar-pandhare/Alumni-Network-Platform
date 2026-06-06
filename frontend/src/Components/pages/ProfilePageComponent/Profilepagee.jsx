@@ -1,322 +1,9 @@
-// import React, { useState, useEffect } from "react";
-// import "./ProfilePage.css";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faUser,
-//   faEnvelope,
-//   faBriefcase,
-//   faMapMarker,
-//   faLink,
-//   faCode,
-//   faPhone,
-//   faGraduationCap,
-//   faCalendar,
-//   faUniversity,
-//   faGlobe,
-//   faPen,
-//   faCamera,
-// } from "@fortawesome/free-solid-svg-icons";
-// import { FaSignOutAlt } from "react-icons/fa";
-// import { auth } from "../firebase";
-// import { onAuthStateChanged, signOut } from "firebase/auth";
-
-// const initialFields = {
-//   name: "",
-//   email: "",
-//   college: "",
-//   branch: "",
-//   passingYear: "",
-//   occupation: "",
-//   location: "",
-//   linkedin: "",
-//   github: "",
-//   about: "",
-//   skills: "",
-//   mobile: "",
-//   profileImage: "",
-// };
-
-// const ProfilePage = () => {
-//   const [fields, setFields] = useState(initialFields);
-//   const [editMode, setEditMode] = useState(
-//     Object.keys(initialFields).reduce(
-//       (acc, key) => ({ ...acc, [key]: false }),
-//       {}
-//     )
-//   );
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//   const [profileExists, setProfileExists] = useState(false);
-//   const [showImageInput, setShowImageInput] = useState(false);
-
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-//       if (user) {
-//         setFields((prev) => ({
-//           ...prev,
-//           email: user.email || "",
-//           name: user.displayName || "",
-//         }));
-
-//         try {
-//           const res = await fetch(
-//             `/profile?email=${user.email}`
-//           );
-//           if (res.ok) {
-//             const profile = await res.json();
-//             setFields(profile);
-//             setProfileExists(true);
-//             setEditMode(
-//               Object.keys(initialFields).reduce(
-//                 (acc, key) => ({ ...acc, [key]: false }),
-//                 {}
-//               )
-//             );
-//           } else if (res.status === 404) {
-//             setProfileExists(false);
-//             setEditMode(
-//               Object.keys(initialFields).reduce(
-//                 (acc, key) => ({ ...acc, [key]: true }),
-//                 {}
-//               )
-//             );
-//           } else {
-//             let errorData;
-//             try {
-//               errorData = await res.json();
-//             } catch {
-//               errorData = { message: "Invalid response from server" };
-//             }
-//             setError(errorData.message || "Failed to fetch profile");
-//           }
-//         } catch (err) {
-//           setError("Server error: " + err.message);
-//         } finally {
-//           setLoading(false);
-//         }
-//       } else {
-//         setLoading(false);
-//       }
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   const handleChange = (e, field) => {
-//     setFields({ ...fields, [field]: e.target.value });
-//   };
-
-//   const handleImageUpload = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = async () => {
-//         const base64Image = reader.result;
-//         try {
-//           const res = await fetch("/profile", {
-//             method: profileExists ? "PATCH" : "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ ...fields, profileImage: base64Image }),
-//           });
-
-//           if (!res.ok) {
-//             alert("Failed to upload image");
-//             return;
-//           }
-
-//           setFields((prev) => ({ ...prev, profileImage: base64Image }));
-//           setProfileExists(true);
-//           setShowImageInput(false);
-//           alert("Profile image uploaded and saved!");
-//         } catch (err) {
-//           alert("Error uploading image: " + err.message);
-//         }
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
-
-//   const handleSaveOrEdit = async (field) => {
-//     if (editMode[field]) {
-//       const endpoint = "/profile";
-//       const method = profileExists ? "PATCH" : "POST";
-
-//       try {
-//         const res = await fetch(endpoint, {
-//           method,
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify(fields),
-//         });
-
-//         const text = await res.text();
-//         let data;
-//         try {
-//           data = JSON.parse(text);
-//         } catch (e) {
-//           alert("Failed to save: Invalid JSON response");
-//           return;
-//         }
-
-//         if (!res.ok) {
-//           alert("Failed to save profile: " + (data.message || "Unknown error"));
-//           return;
-//         }
-
-//         alert("Profile saved successfully!");
-//         setEditMode((prev) => ({ ...prev, [field]: false }));
-//         setProfileExists(true);
-//       } catch (err) {
-//         alert("Error saving profile: " + err.message);
-//       }
-//     } else {
-//       setEditMode((prev) => ({ ...prev, [field]: true }));
-//     }
-//   };
-
-//   const logout = async () => {
-//     try {
-//       await signOut(auth);
-//       window.location.href = "/login"; // or use navigate("/") if you're using react-router
-//     } catch (err) {
-//       alert("Error logging out: " + err.message);
-//     }
-//   };
-
-//   const renderInput = (label, key, type = "text", isTextarea = false, icon) => (
-//     <div className="input-group" key={key}>
-//       <div className="input-label">
-//         <FontAwesomeIcon icon={icon} className="input-icon" />
-//         <label>{label}</label>
-//       </div>
-//       {isTextarea ? (
-//         <textarea
-//           className="input-field textarea-field"
-//           placeholder={`Enter your ${label}`}
-//           value={fields[key]}
-//           onChange={(e) => handleChange(e, key)}
-//           disabled={!editMode[key]}
-//         />
-//       ) : (
-//         <input
-//           type={type}
-//           className="input-field"
-//           placeholder={`Enter your ${label}`}
-//           value={fields[key]}
-//           onChange={(e) => handleChange(e, key)}
-//           disabled={!editMode[key]}
-//         />
-//       )}
-//       <button className="field-button" onClick={() => handleSaveOrEdit(key)}>
-//         {editMode[key] ? "Save" : "Edit"}
-//         <FontAwesomeIcon icon={faPen} className="button-icon" />
-//       </button>
-//     </div>
-//   );
-
-//   if (loading) return <div>Loading profile...</div>;
-//   if (error) return <div className="error-message">{error}</div>;
-
-//   return (
-//     <div className="profile-container">
-//       <div className="sidebar">
-//         <ul>
-//           <li className="active">
-//             <FontAwesomeIcon icon={faUser} className="sidebar-icon" />
-//             <span>Profile</span>
-//           </li>
-//           <li onClick={logout} className="logout-button">
-//             <FaSignOutAlt className="sidebar-icon" />
-//             <span>Logout</span>
-//           </li>
-//         </ul>
-//       </div>
-
-//       <div className="profile-main">
-//         <div className="profile-header">
-//           <div className="profile-image-wrapper">
-//             <img
-//               src={
-//                 fields.profileImage ||
-//                 "https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg"
-//               }
-//               alt="Profile"
-//               className="profile-image"
-//             />
-//             {showImageInput ? (
-//               <input
-//                 type="file"
-//                 accept="image/*"
-//                 onChange={handleImageUpload}
-//                 className="upload-input"
-//               />
-//             ) : (
-//               <button
-//                 className="change-image-button"
-//                 onClick={() => setShowImageInput(true)}
-//               >
-//                 <FontAwesomeIcon icon={faCamera} /> Change Image
-//               </button>
-//             )}
-//           </div>
-
-//           <div className="flex items-center justify-center align-middle">
-//             <h1 className="text-4xl font-bold text-blue-600">My Profile</h1>
-//           </div>
-//         </div>
-
-//         <div className="profile-sections">
-//           <div className="profile-section">
-//             <h2>
-//               <FontAwesomeIcon icon={faUser} /> Basic Information
-//             </h2>
-//             <div className="profile-grid">
-//               {renderInput("Full Name", "name", "text", false, faUser)}
-//               {renderInput("Email", "email", "email", false, faEnvelope)}
-//               {renderInput("Mobile Number", "mobile", "tel", false, faPhone)}
-//               {renderInput("Location", "location", "text", false, faMapMarker)}
-//             </div>
-//           </div>
-
-//           <div className="profile-section">
-//             <h2>
-//               <FontAwesomeIcon icon={faGraduationCap} /> Education
-//             </h2>
-//             <div className="profile-grid">
-//               {renderInput("College Name", "college", "text", false, faUniversity)}
-//               {renderInput("Branch", "branch", "text", false, faCode)}
-//               {renderInput("Passing Year", "passingYear", "number", false, faCalendar)}
-//             </div>
-//           </div>
-
-//           <div className="profile-section">
-//             <h2>
-//               <FontAwesomeIcon icon={faBriefcase} /> Professional
-//             </h2>
-//             <div className="profile-grid">
-//               {renderInput("Occupation", "occupation", "text", false, faBriefcase)}
-//               {renderInput("LinkedIn URL", "linkedin", "url", false, faLink)}
-//               {renderInput("GitHub URL", "github", "url", false, faCode)}
-//             </div>
-//           </div>
-
-//           <div className="profile-section full-width">
-//             {renderInput("About Yourself", "about", "text", true, faGlobe)}
-//             {renderInput("Skills", "skills", "text", false, faCode)}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProfilePage;
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUserCircle, FaCloudUploadAlt, FaCheckCircle } from "react-icons/fa";
-import { auth } from "../../pages/firebase"; // Make sure this path is correct
+import { auth } from "../../pages/firebase"; // Verified path
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -338,7 +25,6 @@ const ProfilePage = () => {
         email: auth.currentUser.email || ""
       }));
     } else {
-      // If not immediately available, listen for auth state changes
       const unsubscribe = auth.onAuthStateChanged((user) => {
         if (user) {
           setFormData((prev) => ({
@@ -372,8 +58,8 @@ const ProfilePage = () => {
   const uploadToCloudinary = async (image) => {
     const data = new FormData();
     data.append("file", image);
-      const cloudName = import.meta.env.CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.CLOUDINARY_UPLOAD_PRESET;
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.VITE_CLOUDINARY_UPLOAD_PRESET;
     data.append("upload_preset", uploadPreset);
     data.append("cloud_name", cloudName);
 
@@ -397,7 +83,7 @@ const ProfilePage = () => {
 
     const mobileRegex = /^(\+?\d{1,3}[- ]?)?\d{10}$/;
     if (!mobileRegex.test(formData.mobile)) {
-      setSubmitError("Please enter a valid 10-digit mobile number (with optional country code)");
+      setSubmitError("Please enter a valid 10-digit mobile number.");
       setIsSubmitting(false);
       return;
     }
@@ -408,21 +94,19 @@ const ProfilePage = () => {
         imageUrl = await uploadToCloudinary(formData.profileImage);
       }
 
-      // ✅ FIX #12: Field names now match ProfileModel schema exactly
-      // Schema uses: passingYear, occupation, linkedin, mobile (not graduationYear, currentJob, linkedIn, MobileNum)
       const payload = {
         name: formData.name,
         email: formData.email,
         branch: formData.branch,
-        passingYear: formData.passingYear,   // was: graduationYear
-        occupation: formData.occupation,      // was: currentJob
+        passingYear: formData.passingYear,
+        occupation: formData.occupation,
         location: formData.location,
-        linkedin: formData.linkedin,          // was: linkedIn (capital N)
+        linkedin: formData.linkedin,
         github: formData.github,
         about: formData.about,
         skills: formData.skills,
         profileImage: imageUrl,
-        mobile: formData.mobile,              // was: MobileNum
+        mobile: formData.mobile,
       };
 
       await axios.post("http://localhost:5000/profile", payload);
@@ -474,7 +158,6 @@ const ProfilePage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left fields */}
             <div className="space-y-4">
               <div>
                 <label className="form-label">Full Name*</label>
@@ -494,7 +177,7 @@ const ProfilePage = () => {
                   type="email"
                   name="email"
                   value={formData.email}
-                  readOnly // Email is read-only
+                  readOnly
                   className="form-input bg-gray-100 text-gray-400 cursor-not-allowed"
                   placeholder="you@email.com"
                 />
@@ -536,7 +219,7 @@ const ProfilePage = () => {
                 />
               </div>
             </div>
-            {/* Right fields */}
+
             <div className="space-y-4">
               <div>
                 <label className="form-label">Current Occupation</label>
@@ -595,7 +278,7 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-          {/* About */}
+
           <div>
             <label className="form-label">About You</label>
             <textarea
@@ -633,7 +316,6 @@ const ProfilePage = () => {
         </form>
       </motion.div>
 
-      {/* Tailwind styles for premium look */}
       <style>{`
         .form-label {
           display: block;
