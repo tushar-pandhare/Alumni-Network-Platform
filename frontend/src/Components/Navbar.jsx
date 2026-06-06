@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, LogOut, User } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { auth } from "./pages/firebase";
 
 const navLinks = [
   { to: "/home", label: "Home" },
@@ -52,9 +54,16 @@ const Navbar = () => {
       ${isActive ? "text-blue-500" : "text-white hover:text-blue-400"}
       `;
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Firebase signOut error:", err);
+    } finally {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   const toggleMenu = () => setMenuOpen((o) => !o);

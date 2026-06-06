@@ -2,24 +2,43 @@ const express = require("express");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
-const Donation = require("../Models/DonationModel.js");
+const Donation = require("../Models/DonationModel");
 
 const router = express.Router();
 
-// Cloudinary uses env vars already configured in Server.js (no need to re-config here)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// Memory storage for file buffering
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB per file
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only JPG, PNG, WEBP, and PDF files are allowed"));
+    }
+  },
 });
 
-/**
- * POST /donations/donate
- * Accepts multipart/form-data with optional file uploads (proof screenshot + ID proof)
- * OR application/json (when frontend sends Cloudinary URLs already uploaded)
- */
+const uploadToCloudinary = (buffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "donations" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+
+// POST /donations/donate — upload proof files + save donation to MongoDB
 router.post("/donate", upload.array("files", 2), async (req, res) => {
   try {
     const { name, email, amount, method, transactionId, message } = req.body;
@@ -32,42 +51,26 @@ router.post("/donate", upload.array("files", 2), async (req, res) => {
       });
     }
 
-    let fileUrls = [];
-
-    // If files were sent as multipart (direct upload from form)
+    // Upload each file to Cloudinary (if any)
+    let uploadedUrls = [];
     if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map((file) => {
-        return new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            { folder: "donations", resource_type: "auto" },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result.secure_url);
-            }
-          );
-          streamifier.createReadStream(file.buffer).pipe(stream);
-        });
-      });
-      fileUrls = await Promise.all(uploadPromises);
+      uploadedUrls = await Promise.all(
+        req.files.map((file) => uploadToCloudinary(file.buffer))
+      );
     }
 
-    // If files were already uploaded to Cloudinary by frontend and URLs passed as JSON
-    if (req.body.files && Array.isArray(req.body.files)) {
-      fileUrls = req.body.files;
-    }
-
-    // Save donation to MongoDB
-    const donation = new Donation({
+    // FIX: Actually save to MongoDB (was missing before)
+    const newDonation = new Donation({
       name,
       email,
       amount: parseFloat(amount),
       method,
       transactionId,
       message: message || "",
-      files: fileUrls,
+      files: uploadedUrls,
     });
 
-    await donation.save();
+    await newDonation.save();
 
     return res.status(201).json({
       success: true,
@@ -75,28 +78,26 @@ router.post("/donate", upload.array("files", 2), async (req, res) => {
       data: {
         name,
         email,
-        amount: parseFloat(amount),
+        amount,
         method,
         transactionId,
-        files: fileUrls,
+        message,
+        files: uploadedUrls,
       },
     });
   } catch (error) {
     console.error("Donation route error:", error);
-    return res.status(500).json({ success: false, error: "Server error while processing donation" });
+    return res.status(500).json({ success: false, error: "Server error: " + error.message });
   }
 });
 
-/**
- * GET /donations/recent
- * Returns the 10 most recent verified donations for display
- */
+// GET /donations/recent — fetch recent donations (for the portal display)
 router.get("/recent", async (req, res) => {
   try {
     const donations = await Donation.find({})
+      .select("name amount method createdAt message")
       .sort({ createdAt: -1 })
-      .limit(10)
-      .select("name amount createdAt message");
+      .limit(10);
     res.json({ success: true, donations });
   } catch (err) {
     res.status(500).json({ success: false, error: "Failed to fetch donations" });

@@ -32,14 +32,11 @@ const handleChange = (e) => {
   const uploadToCloudinary = async (image) => {
     const data = new FormData();
     data.append("file", image);
-    
-  const cloudName = import.meta.env.CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.CLOUDINARY_UPLOAD_PRESET;
-  data.append("upload_preset", "uploeadPreset");
-  data.append("cloud_name", "cloudName");
+    data.append("upload_preset", "alumni_uploads");
+    data.append("cloud_name", "deda1j7ca");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      const res = await fetch("https://api.cloudinary.com/v1_1/deda1j7ca/image/upload", {
         method: "POST",
         body: data,
       });
@@ -73,15 +70,15 @@ const handleChange = (e) => {
         name: formData.name,
         email: formData.email,
         branch: formData.branch,
-        graduationYear: formData.passingYear,
-        currentJob: formData.occupation,
+        passingYear: formData.passingYear,   // schema field name
+        occupation: formData.occupation,      // schema field name
         location: formData.location,
-        linkedIn: formData.linkedin,
+        linkedin: formData.linkedin,          // schema field name (lowercase n)
         github: formData.github,
         about: formData.about,
-        skills: formData.skills.split(',').map(skill => skill.trim()),
+        skills: formData.skills,             // stored as comma-separated string in schema
         profileImage: imageUrl,
-        MobileNum: formData.mobile
+        mobile: formData.mobile,             // schema field name
       };
 
       await axios.post("/profile", payload);

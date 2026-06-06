@@ -117,7 +117,7 @@ const EventsCalendar = () => {
   return (
     <>
     <AlumniNavbar />
-      {/* Alert */}
+      {}
       {alert && (
         <div
           className={`fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition-all
@@ -132,7 +132,7 @@ const EventsCalendar = () => {
             <FaCalendarAlt className="text-[6rem] text-blue-700 opacity-10 mx-auto" />
       </div>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 px-2 py-10 font-sans overflow-x-hidden pt-40">
-        {/* Hero Section */}
+        {}
         <section className="max-w-3xl mx-auto mb-14 text-center relative">
           
           <div className="relative z-10">
@@ -146,7 +146,7 @@ const EventsCalendar = () => {
         </section>
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Create Event */}
+          {}
           <aside className="md:col-span-1">
             <div className="backdrop-blur bg-white/80 dark:bg-slate-800/70 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 sticky top-32">
               <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-slate-800 dark:text-slate-200">
@@ -243,7 +243,7 @@ const EventsCalendar = () => {
             </div>
           </aside>
 
-          {/* Upcoming Events */}
+          {}
           <main className="md:col-span-2">
             <div className="backdrop-blur bg-white/80 dark:bg-slate-800/70 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
               <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 text-slate-800 dark:text-slate-200">
@@ -319,296 +319,72 @@ const EventsCalendar = () => {
 export default EventsCalendar;
     // import { FaCalendarAlt, FaMapMarkerAlt, FaClock } from "react-icons/fa";
     // import { useState, useEffect } from "react";
-    // import AlumniNavbar from "../AlumniNavbar";
 
     // const EventsCalendar = () => {
     //   const [events, setEvents] = useState([]);
-    //   const [formData, setFormData] = useState({
-    //     title: "",
-    //     date: "",
-    //     time: "",
-    //     location: "",
-    //     type: "",
-    //     description: "",
-    //     link: "",
-    //   });
-    //   const [alert, setAlert] = useState(null);
 
     //   useEffect(() => {
     //     const fetchEvents = async () => {
-    //       try {
-    //         const res = await fetch("/events");
-    //         const data = await res.json();
-    //         setEvents(data);
-    //       } catch (err) {
-    //         showAlert("Error fetching events", "error");
-    //       }
-    //     };
 
     //     fetchEvents();
     //   }, []);
 
     //   const showAlert = (message, type) => {
     //     setAlert({ message, type });
-    //     setTimeout(() => setAlert(null), 5000);
-    //   };
 
     //   const handleChange = (e) => {
     //     const { name, value } = e.target;
-    //     setFormData((prev) => ({ ...prev, [name]: value }));
-    //   };
 
     //   const isPastDate = (inputDate) => {
     //     const today = new Date();
-    //     today.setHours(0, 0, 0, 0);
-    //     const date = new Date(inputDate);
-    //     return date < today;
-    //   };
 
     //   const isValidLocation = (location) => {
     //     return location.trim().length > 0;
-    //   };
 
     //   const handleSubmit = async (e) => {
     //     e.preventDefault();
 
     //     if (isPastDate(formData.date)) {
     //       showAlert("Please enter a future date for the event", "error");
-    //       return;
-    //     }
 
     //     if (!isValidLocation(formData.location)) {
     //       showAlert("Please enter a valid location", "error");
-    //       return;
-    //     }
 
     //     try {
     //       const res = await fetch("/upload-event", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(formData),
-    //       });
 
     //       const data = await res.json();
     //       if (res.ok) {
-    //         showAlert("Event submitted successfully!", "success");
-    //         setEvents((prev) => [...prev, data.event]);
-    //         setFormData({
-    //           title: "",
-    //           date: "",
-    //           time: "",
-    //           location: "",
-    //           type: "",
-    //           description: "",
-    //           link: "",
-    //         });
-    //       } else {
-    //         showAlert(data.error || "Failed to submit event", "error");
-    //       }
-    //     } catch (error) {
-    //       console.error("Submit Error:", error);
-    //       showAlert("Something went wrong. Please try again.", "error");
-    //     }
-    //   };
 
     //   return (
     //     <>
-    //       <AlumniNavbar />
-    //       {alert && (
-    //         <div
-    //           className={`fixed top-20 right-4 p-4 rounded-lg text-white ${
-    //             alert.type === "success" ? "bg-green-500" : "bg-red-500"
-    //           } transition-opacity duration-300 z-50`}
-    //         >
-    //           {alert.message}
-    //         </div>
-    //       )}
 
     //       <div className="min-h-screen bg-blue-50 overflow-x-hidden">
-    //         {/* Hero Section */}
-    //         <div className="text-center py-16 bg-blue-600 text-white">
-    //           <div className="max-w-4xl mx-auto mt-28 px-4">
-    //             <FaCalendarAlt className="text-6xl mb-6 mx-auto" />
-    //             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-    //               Events Calendar
-    //             </h1>
-    //             <p className="text-lg md:text-xl opacity-95">
-    //               Connect with alumni through global events
-    //             </p>
-    //           </div>
-    //         </div>
+    //         {}
 
-    //         {/* Main Section */}
+    //         {}
     //         <div className="max-w-7xl mx-auto px-4 py-12">
-    //           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    //             {/* Upcoming Events */}
-    //             <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
-    //               <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-3 text-blue-800 mb-4">
-    //                 Upcoming Events
-    //               </h2>
-    //               {events.length === 0 ? (
-    //                 <div className="text-center text-gray-500 py-10">
-    //                   No upcoming events found.
-    //                 </div>
-    //               ) : (
-    //                 events.map((event, index) => (
-    //                   <div
-    //                     key={index}
-    //                     className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300 break-words"
-    //                   >
-    //                     <div className="flex items-center gap-4 mb-4">
-    //                       <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-    //                         <FaCalendarAlt className="text-blue-600 text-xl" />
-    //                       </div>
-    //                       <div>
-    //                         <h3 className="text-lg font-semibold text-gray-800 truncate">
-    //                           {event.title}
-    //                         </h3>
-    //                         <p className="text-sm text-gray-500 italic">
-    //                           {event.type}
-    //                         </p>
-    //                       </div>
-    //                     </div>
-    //                     <ul className="text-sm text-gray-600 space-y-1 mb-3">
-    //                       <li className="flex items-center gap-2">
-    //                         <FaClock className="text-blue-600" />
-    //                         <span>
-    //                           {event.date} • {event.time}
-    //                         </span>
-    //                       </li>
-    //                       <li className="flex items-center gap-2">
-    //                         <FaMapMarkerAlt className="text-blue-600" />
-    //                         <span className="break-words">{event.location}</span>
-    //                       </li>
-    //                     </ul>
-    //                     <div className="mb-3">
-    //                       <p className="text-sm text-gray-600 break-words">
-    //                         {event.description}
-    //                       </p>
-    //                     </div>
-    //                     {event.link && (
-    //                       <a
-    //                         href={event.link}
-    //                         target="_blank"
-    //                         rel="noopener noreferrer"
-    //                         className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-300 break-words"
-    //                       >
-    //                         Join Event
-    //                       </a>
-    //                     )}
-    //                   </div>
-    //                 ))
-    //               )}
-    //             </div>
 
-    //             {/* Create Event Form */}
-    //             <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10 border border-gray-200 self-start">
-    //               <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-3 text-blue-800 mb-8">
-    //                 Create New Event
-    //               </h2>
-    //               <form className="space-y-6" onSubmit={handleSubmit}>
-    //                 <div className="grid grid-cols-1 gap-6">
-    //                   <input
-    //                     type="text"
-    //                     name="title"
-    //                     value={formData.title}
-    //                     onChange={handleChange}
-    //                     placeholder="Event Title"
-    //                     className={inputClass}
-    //                     maxLength="100"
-    //                     required
-    //                   />
+    //             {}
 
     //                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
     //                     <input
-    //                       type="date"
-    //                       name="date"
-    //                       value={formData.date}
-    //                       onChange={handleChange}
-    //                       className={inputClass}
-    //                       required
-    //                     />
-    //                     <input
-    //                       type="text"
-    //                       name="time"
-    //                       value={formData.time}
-    //                       onChange={handleChange}
-    //                       placeholder="Event Time"
-    //                       className={inputClass}
-    //                       maxLength="50"
-    //                       required
-    //                     />
-    //                   </div>
 
     //                   <input
     //                     type="text"
-    //                     name="location"
-    //                     value={formData.location}
-    //                     onChange={handleChange}
-    //                     placeholder="Location"
-    //                     className={inputClass}
-    //                     maxLength="200"
-    //                     required
-    //                   />
 
     //                   <select
     //                     name="type"
-    //                     value={formData.type}
-    //                     onChange={handleChange}
-    //                     className={selectClass}
-    //                     required
-    //                   >
-    //                     <option value="">Select Event Type</option>
-    //                     <option value="Webinar">Webinar</option>
-    //                     <option value="Conference">Conference</option>
-    //                     <option value="Seminar">Seminar</option>
-    //                     <option value="Workshop">Workshop</option>
-    //                   </select>
 
     //                   {(formData.type === "Webinar" ||
     //                     formData.location.toLowerCase() === "virtual") && (
-    //                     <input
-    //                       type="url"
-    //                       name="link"
-    //                       value={formData.link}
-    //                       onChange={handleChange}
-    //                       placeholder="Online Event Link"
-    //                       className={inputClass}
-    //                       maxLength="500"
-    //                       pattern="https?://.+"
-    //                       required
-    //                     />
-    //                   )}
 
     //                   <textarea
     //                     name="description"
-    //                     value={formData.description}
-    //                     onChange={handleChange}
-    //                     placeholder="Event Description"
-    //                     className={`${inputClass} h-36 resize-none`}
-    //                     maxLength="1000"
-    //                     required
-    //                   />
 
     //                   <button
     //                     type="submit"
-    //                     className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300"
-    //                   >
-    //                     Submit Event
-    //                   </button>
-    //                 </div>
-    //               </form>
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </>
-    //   );
-    // };
 
     // const inputClass =
-    //   "border border-gray-300 rounded-lg px-5 py-4 text-lg text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full";
-    // const selectClass =
-    //   "border border-gray-300 rounded-lg px-5 py-4 text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full";
 
     // export default EventsCalendar;

@@ -168,7 +168,7 @@ const MentorshipHub = () => {
     <>
       <AlumniNavbar />
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 px-2 py-10 font-sans">
-        {/* Hero Section */}
+        {}
         <div className="max-w-4xl mx-auto mt-20 mb-14 text-center">
           <FaRocket className="text-6xl mb-6 mx-auto text-blue-700 opacity-70" />
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">
@@ -180,7 +180,7 @@ const MentorshipHub = () => {
         </div>
 
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10">
-          {/* Mentor Search */}
+          {}
           <div className="backdrop-blur bg-white/70 dark:bg-slate-800/70 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
             <h2 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Find a Mentor</h2>
             <input
@@ -192,7 +192,7 @@ const MentorshipHub = () => {
             />
           </div>
 
-          {/* Mentor Registration */}
+          {}
           <div className="backdrop-blur bg-white/70 dark:bg-slate-800/70 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
             <h2 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Become a Mentor</h2>
             {checkingMentorStatus ? (
@@ -225,7 +225,7 @@ const MentorshipHub = () => {
           </div>
         </div>
 
-        {/* Mentors List */}
+        {}
         <div className="max-w-7xl mx-auto mt-20">
           <div className="backdrop-blur bg-white/70 dark:bg-slate-800/70 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-slate-800 dark:text-slate-200">
@@ -262,7 +262,7 @@ const MentorshipHub = () => {
           </div>
         </div>
 
-        {/* Requests Section */}
+        {}
         <div className="max-w-7xl mx-auto mt-20 mb-10">
           <div className="backdrop-blur bg-white/70 dark:bg-slate-800/70 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
             <h2 className="text-xl font-semibold mb-6 text-slate-800 dark:text-slate-200 flex items-center gap-2">
